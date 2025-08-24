@@ -1,0 +1,265 @@
+# Workflow Configuration for COBOL Proof-of-Parse Toolkit
+# This file defines automated development workflows and subagent orchestration
+
+# Subagent Workflow Definitions
+workflows:
+  
+  # Complete feature development pipeline
+  feature-development:
+    name: "New Feature Development Pipeline"
+    trigger: "manual"
+    steps:
+      - step: "analyze-requirements"
+        agent: "cobol-expert"
+        action: "analyze"
+        description: "Analyze COBOL copybook requirements and data formats"
+        timeout: 300
+        
+      - step: "design-parser"
+        agent: "parser-architect" 
+        action: "design"
+        description: "Design streaming parser architecture and data structures"
+        timeout: 600
+        depends_on: ["analyze-requirements"]
+        
+      - step: "implement-core"
+        agent: "rust-specialist"
+        action: "implement"
+        description: "Implement core parsing logic and data structures"
+        timeout: 1200
+        depends_on: ["design-parser"]
+        
+      - step: "security-review"
+        agent: "crypto-auditor"
+        action: "audit"
+        description: "Review cryptographic implementations for security issues"
+        timeout: 600
+        depends_on: ["implement-core"]
+        
+      - step: "generate-tests"
+        agent: "test-runner"
+        action: "test"
+        description: "Generate comprehensive test cases and edge cases"
+        timeout: 600
+        depends_on: ["implement-core"]
+        
+      - step: "code-review"
+        agent: "code-reviewer"
+        action: "review"
+        description: "Final code quality review and optimization suggestions"
+        timeout: 300
+        depends_on: ["security-review", "generate-tests"]
+
+  # CLI enhancement workflow
+  cli-enhancement:
+    name: "CLI User Experience Enhancement"
+    trigger: "manual"
+    steps:
+      - step: "analyze-ux"
+        agent: "cli-designer"
+        action: "analyze"
+        description: "Analyze current CLI user experience and identify improvements"
+        timeout: 300
+        
+      - step: "design-improvements"
+        agent: "cli-designer"
+        action: "design" 
+        description: "Design enhanced CLI interface and user workflows"
+        timeout: 600
+        depends_on: ["analyze-ux"]
+        
+      - step: "implement-cli"
+        agent: "rust-specialist"
+        action: "implement"
+        description: "Implement CLI improvements with clap and user experience features"
+        timeout: 900
+        depends_on: ["design-improvements"]
+        
+      - step: "test-cli"
+        agent: "test-runner"
+        action: "test"
+        description: "Test CLI functionality across different scenarios"
+        timeout: 400
+        depends_on: ["implement-cli"]
+
+  # Blockchain integration workflow
+  blockchain-integration:
+    name: "Blockchain Anchoring Implementation"
+    trigger: "manual"
+    steps:
+      - step: "analyze-requirements"
+        agent: "blockchain-integrator"
+        action: "analyze"
+        description: "Analyze blockchain anchoring requirements and target networks"
+        timeout: 300
+        
+      - step: "design-adapters"
+        agent: "blockchain-integrator"
+        action: "design"
+        description: "Design pluggable adapter architecture for multiple blockchains"
+        timeout: 600
+        depends_on: ["analyze-requirements"]
+        
+      - step: "implement-hedera"
+        agent: "blockchain-integrator"
+        action: "implement"
+        description: "Implement Hedera HCS adapter for consensus service"
+        timeout: 900
+        depends_on: ["design-adapters"]
+        
+      - step: "implement-ethereum"
+        agent: "blockchain-integrator"
+        action: "implement"
+        description: "Implement Ethereum L2 adapter for cost-effective anchoring"
+        timeout: 900
+        depends_on: ["design-adapters"]
+        
+      - step: "security-audit"
+        agent: "crypto-auditor"
+        action: "audit"
+        description: "Audit blockchain integration for security vulnerabilities"
+        timeout: 600
+        depends_on: ["implement-hedera", "implement-ethereum"]
+        
+      - step: "integration-tests"
+        agent: "test-runner"
+        action: "test"
+        description: "Test blockchain integrations on testnets"
+        timeout: 1200
+        depends_on: ["security-audit"]
+
+  # Release preparation workflow
+  release-preparation:
+    name: "Release Preparation and Quality Assurance"
+    trigger: "manual"
+    steps:
+      - step: "run-full-tests"
+        agent: "test-runner"
+        action: "test"
+        description: "Execute complete test suite including edge cases"
+        timeout: 900
+        
+      - step: "security-audit"
+        agent: "crypto-auditor"
+        action: "audit"
+        description: "Comprehensive security audit of all cryptographic operations"
+        timeout: 1200
+        
+      - step: "performance-review"
+        agent: "rust-specialist"
+        action: "optimize"
+        description: "Review performance and optimize critical paths"
+        timeout: 900
+        depends_on: ["run-full-tests"]
+        
+      - step: "update-documentation"
+        agent: "documentation-generator"
+        action: "generate"
+        description: "Update all documentation, README files, and examples"
+        timeout: 600
+        depends_on: ["security-audit"]
+        
+      - step: "final-review"
+        agent: "code-reviewer"
+        action: "review"
+        description: "Final comprehensive code review before release"
+        timeout: 600
+        depends_on: ["performance-review", "update-documentation"]
+
+# Scheduled Workflows (Proactive)
+scheduled_workflows:
+  
+  daily-health-check:
+    name: "Daily Project Health Check"
+    schedule: "0 9 * * *"  # 9 AM daily
+    workflow: "health-check"
+    enabled: true
+    steps:
+      - step: "run-tests"
+        agent: "test-runner"
+        action: "test"
+        description: "Run core test suite to ensure project health"
+        
+      - step: "security-scan"
+        agent: "crypto-auditor"
+        action: "scan"
+        description: "Quick security scan for new vulnerabilities"
+        
+      - step: "code-quality-check"
+        agent: "code-reviewer"
+        action: "analyze"
+        description: "Analyze recent code changes for quality issues"
+
+  weekly-optimization:
+    name: "Weekly Performance Optimization"
+    schedule: "0 10 * * 0"  # 10 AM every Sunday
+    workflow: "optimization-review"
+    enabled: true
+    steps:
+      - step: "performance-analysis"
+        agent: "rust-specialist"
+        action: "analyze"
+        description: "Analyze performance metrics and identify optimization opportunities"
+        
+      - step: "suggest-improvements"
+        agent: "parser-architect"
+        action: "optimize"
+        description: "Suggest architectural improvements for better performance"
+
+# Agent Configuration
+agents:
+  timeout_default: 600  # 10 minutes default timeout
+  retry_count: 2
+  retry_delay: 30  # 30 seconds between retries
+  
+  # Agent-specific overrides
+  overrides:
+    crypto-auditor:
+      timeout: 1200  # 20 minutes for security audits
+      priority: "high"
+      
+    blockchain-integrator:
+      timeout: 1800  # 30 minutes for blockchain operations
+      priority: "high"
+      
+    test-runner:
+      timeout: 1800  # 30 minutes for comprehensive testing
+      retry_count: 3
+
+# Notification Settings
+notifications:
+  console: true
+  log_file: true
+  
+  # Workflow completion notifications
+  on_success: true
+  on_failure: true
+  on_timeout: true
+  
+  # Critical error notifications
+  critical_errors:
+    - "Security vulnerability detected"
+    - "Build failed"
+    - "Test suite failed"
+    - "Blockchain integration failed"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  workflow_log: "workflow_logs/orchestrator.log"
+  agent_log: "workflow_logs/agents.log"
+  max_log_size: 10485760  # 10MB
+  backup_count: 5
+
+# Environment Settings
+environment:
+  working_directory: "/home/resurx/COBOL"
+  python_env: "subagent-env"
+  rust_toolchain: "stable"
+  
+  # Required tools
+  required_tools:
+    - "cargo"
+    - "rustc" 
+    - "git"
+    - "python3"
